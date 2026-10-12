@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#122b35">
+  <title>TerraSignal — Damage Assessor</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="TerraSignal home">
+        <span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 20.5 12.5 13l5 5L27 8.5M19 8.5h8v8"/><path d="M5 25.5h22"/></svg></span>
+        <span><strong>TerraSignal</strong><small>DISASTER INTELLIGENCE</small></span>
+      </a>
+      <div class="sidebar-label">WORKSPACE</div>
+      <button class="nav-item active" id="eventsNav"><span class="nav-icon">▦</span> Events <span class="nav-count" id="eventCount">0</span></button>
+      <div class="sidebar-label events-label">YOUR EVENTS <button id="sideAddEvent" class="mini-add" aria-label="Create an event">+</button></div>
+      <div id="eventList" class="event-list"><div class="sidebar-empty">Your events will appear here.</div></div>
+      <div class="sidebar-foot">
+        <div class="status-dot"></div><span>Local workspace</span><span class="privacy-lock">▣</span>
+        <p>Your reports stay on this device.</p>
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="crumbs"><span class="crumb-home">TERRASIGNAL</span><span class="crumb-slash">/</span><span id="breadcrumbCurrent">EVENTS</span></div>
+        <div class="top-actions"><span class="local-indicator"><i></i> Saved locally</span><button class="button button-dark button-small" id="topAddEvent"><span>＋</span> New event</button></div>
+      </header>
+      <main id="mainView" class="main-view" aria-live="polite">
+        <div class="loading-state"><span class="spinner"></span> Loading your workspace…</div>
+      </main>
+      <footer class="app-footer"><span>TERRASIGNAL · POST-DISASTER DAMAGE ASSESSOR</span><span>Reported impact · For situational awareness</span></footer>
+    </div>
+  </div>
+
+  <dialog id="eventDialog" class="modal">
+    <form id="eventForm" method="dialog" class="modal-form">
+      <div class="modal-head"><div><span class="eyebrow">EVENT DETAILS</span><h2 id="eventDialogTitle">Create an event</h2></div><button type="button" class="icon-button" data-close="eventDialog" aria-label="Close">×</button></div>
+      <input type="hidden" name="id">
+      <label>Event name <span class="required">*</span><input name="name" required maxlength="120" placeholder="e.g. Himachal Pradesh Floods 2026"></label>
+      <div class="field-row"><label>Disaster type<select name="disaster_type"><option value="">Select type</option><option>Flood</option><option>Earthquake</option><option>Cyclone</option><option>Landslide</option><option>Storm</option><option>Wildfire</option><option>Drought</option><option>Other</option></select></label><label>Region / location<input name="location" maxlength="120" placeholder="e.g. Himachal Pradesh"></label></div>
+      <label>Description <span class="optional">OPTIONAL</span><textarea name="description" rows="3" maxlength="500" placeholder="A short note about the event"></textarea></label>
+      <div class="field-row"><label>Start date<input name="start_date" type="date"></label><label>End date<input name="end_date" type="date"></label></div>
+      <div class="modal-actions"><button type="button" class="button button-quiet" data-close="eventDialog">Cancel</button><button type="submit" class="button button-dark" id="eventSaveButton">Create event <span>→</span></button></div>
+    </form>
+  </dialog>
+
+  <dialog id="sceneDialog" class="modal">
+    <form id="sceneForm" method="dialog" class="modal-form">
+      <div class="modal-head"><div><span class="eyebrow">SCENE DETAILS</span><h2 id="sceneDialogTitle">Create a scene</h2></div><button type="button" class="icon-button" data-close="sceneDialog" aria-label="Close">×</button></div>
+      <input type="hidden" name="id">
+      <label>Scene name <span class="required">*</span><input name="name" required maxlength="120" placeholder="e.g. Mandi District"></label>
+      <label>Location / affected area<input name="location" maxlength="120" placeholder="District, town, or reporting zone"></label>
+      <label>Description <span class="optional">OPTIONAL</span><textarea name="description" rows="3" maxlength="500" placeholder="Operational notes for this scene"></textarea></label>
+      <div class="modal-actions"><button type="button" class="button button-quiet" data-close="sceneDialog">Cancel</button><button type="submit" class="button button-dark">Save scene <span>→</span></button></div>
+    </form>
+  </dialog>
+
+  <dialog id="reviewDialog" class="modal modal-wide">
+    <form id="reviewForm" method="dialog" class="modal-form">
+      <div class="modal-head"><div><span class="eyebrow">REVIEW EXTRACTION</span><h2>Check this assessment</h2></div><button type="button" class="icon-button" data-close="reviewDialog" aria-label="Close">×</button></div>
+      <input type="hidden" name="id"><div class="original-report" id="reviewOriginal"></div>
+      <div class="field-row"><label>Extracted location<input name="location" maxlength="120" placeholder="Not identified"></label><label>Disaster type<input name="disaster_type" maxlength="80" placeholder="Not identified"></label></div>
+      <div class="review-section-head"><div><h3>Damage mentions</h3><p>Blank quantities remain unquantified; choose severity only when the report states it.</p></div><button type="button" class="button button-outline button-small" id="addDamage">＋ Add item</button></div>
+      <div id="damageEditor" class="damage-editor"></div>
+      <div class="modal-actions"><button type="button" class="button button-quiet" data-close="reviewDialog">Cancel</button><button type="submit" class="button button-dark">Save assessment <span>→</span></button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>
