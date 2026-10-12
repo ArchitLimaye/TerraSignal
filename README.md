@@ -14,10 +14,12 @@ TerraSignal is a web application that helps organize and analyze damage reports 
 
 ## Tech Stack
 
-- Python and Flask
-- SQLite
-- HTML, CSS, and JavaScript
-- Chart.js
+- **Backend:** Python, Flask
+- **Frontend:** HTML5, CSS3, JavaScript
+- **Data Storage:** JSON (local file-based storage)
+- **Data Visualization:** JavaScript-based charts
+- **Testing:** Python unittest
+- **Tools:** Git, GitHub, VS Code
 
 ## Getting Started
 
