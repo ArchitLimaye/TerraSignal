@@ -3,35 +3,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#122b35">
+  <meta name="theme-color" content="#08090b">
   <title>TerraSignal — Damage Assessor</title>
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar">
       <a class="brand" href="#" aria-label="TerraSignal home">
-        <span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 20.5 12.5 13l5 5L27 8.5M19 8.5h8v8"/><path d="M5 25.5h22"/></svg></span>
+        <span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="brand-pin" d="M16 23.5s-8.2-7.3-8.2-13a8.2 8.2 0 1 1 16.4 0c0 5.7-8.2 13-8.2 13Z"/><circle class="brand-node" cx="16" cy="10.5" r="2.6"/><path class="brand-ground" d="M3.5 27c4.2-2.2 7.2-2.2 11.3 0 4.4 2.3 7.1 2.3 13.7 0"/></svg></span>
         <span><strong>TerraSignal</strong><small>DISASTER INTELLIGENCE</small></span>
       </a>
       <div class="sidebar-label">WORKSPACE</div>
       <button class="nav-item active" id="eventsNav"><span class="nav-icon">▦</span> Events <span class="nav-count" id="eventCount">0</span></button>
       <div class="sidebar-label events-label">YOUR EVENTS <button id="sideAddEvent" class="mini-add" aria-label="Create an event">+</button></div>
       <div id="eventList" class="event-list"><div class="sidebar-empty">Your events will appear here.</div></div>
-      <div class="sidebar-foot">
-        <div class="status-dot"></div><span>Local workspace</span><span class="privacy-lock">▣</span>
-        <p>Your reports stay on this device.</p>
-      </div>
     </aside>
 
     <div class="main-column">
       <header class="topbar">
         <div class="crumbs"><span class="crumb-home">TERRASIGNAL</span><span class="crumb-slash">/</span><span id="breadcrumbCurrent">EVENTS</span></div>
-        <div class="top-actions"><span class="local-indicator"><i></i> Saved locally</span><button class="button button-dark button-small" id="topAddEvent"><span>＋</span> New event</button></div>
+        <div class="top-actions"><button class="button button-dark button-small" id="topAddEvent"><span>＋</span> New event</button></div>
       </header>
       <main id="mainView" class="main-view" aria-live="polite">
         <div class="loading-state"><span class="spinner"></span> Loading your workspace…</div>

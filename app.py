@@ -12,6 +12,7 @@ import tempfile
 import threading
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 from uuid import uuid4
 
@@ -69,15 +70,34 @@ def _normalize_unit(raw: str | None) -> str | None:
     return "items"
 
 
-def _extract_location(text: str) -> str | None:
-    # Only use a place explicitly following a location preposition. The
-    # conservative capitalization rule avoids turning arbitrary prose into a place.
+def _extract_location(text: str, doc=None) -> str | None:
+    
     match = re.search(
         r"\b(?:in|at|near|around|from)\s+(?:the\s+)?"
         r"([A-Z][A-Za-z'-]*(?:\s+(?:[A-Z][A-Za-z'-]*|District|Village|Town|City|Block|Region|Valley)){0,4})",
         text,
     )
-    return match.group(1).strip(" ,.;:") if match else None
+    if match:
+        return match.group(1).strip(" ,.;:")
+
+    # The small spaCy model can recognize place names even when the report's
+    # capitalization or wording does not match the conservative rule above.
+    if doc is not None:
+        for entity in doc.ents:
+            if entity.label_ not in {"GPE", "LOC", "FAC"}:
+                continue
+            context_before = text[max(0, entity.start_char - 40):entity.start_char]
+            if re.search(r"\b(?:in|at|near|around|from|within|across)\s+(?:the\s+)?$", context_before, re.IGNORECASE):
+                return entity.text.strip(" ,.;:")
+    return None
+
+
+@lru_cache(maxsize=1)
+def _load_nlp_model():
+    """Load the local small English spaCy pipeline once, on first report."""
+    import spacy
+
+    return spacy.load("en_core_web_sm", disable=["parser", "tagger", "attribute_ruler", "lemmatizer"])
 
 
 def _extract_disaster_type(text: str) -> str | None:
@@ -104,8 +124,9 @@ def _extract_severity(context: str) -> str | None:
 
 
 def extract_report(text: str) -> dict:
-    """Extract explicit report facts with keyword and regex rules; never invent quantities."""
+    """Extract explicit report facts with a local NLP model and explainable rules."""
     cleaned = re.sub(r"\s+", " ", text).strip()
+    doc = _load_nlp_model()(cleaned)
     damages: list[dict] = []
     occupied_spans: list[tuple[int, int]] = []
     for category, aliases in CATEGORIES.items():
@@ -143,7 +164,7 @@ def extract_report(text: str) -> dict:
                 })
 
     return {
-        "location": _extract_location(cleaned),
+        "location": _extract_location(cleaned, doc),
         "disaster_type": _extract_disaster_type(cleaned),
         "damages": damages,
     }

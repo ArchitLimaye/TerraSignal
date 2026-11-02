@@ -17,6 +17,7 @@ PROJECT_FILES = [
     "static/favicon.svg",
     "static/app.js",
     "static/styles.css",
+    "static/theme.css",
     "tests/test_acceptance.py",
     "tests/TEST_CASES.md",
     "tests/test_app.py",

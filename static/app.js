@@ -180,7 +180,7 @@
     const entries = Object.entries(obj || {}).sort((a, b) => b[1] - a[1]);
     const total = entries.reduce((sum, row) => sum + Number(row[1]), 0);
     if (!total) { element.innerHTML = `<div class="no-chart-data">No damage mentions to chart yet.</div>`; return; }
-    const colors = ["#397e73", "#d58a62", "#7299a9", "#c4aa63", "#8894b8", "#86aa8c"];
+    const colors = ["#f0a744", "#91a8c0", "#e88947", "#8d94a4", "#bd895f", "#627991"];
     let cursor = 0;
     const stops = entries.map(([, value], index) => {
       const start = cursor;
@@ -203,7 +203,7 @@
 
   function reportsMarkup(event, reports) {
     const options = [`<option value="">Event-wide report</option>`, ...state.scenes.map((scene) => `<option value="${scene.id}" ${scene.id === state.sceneId ? "selected" : ""}>${esc(scene.name)}</option>`)].join("");
-    return `<div class="report-layout"><section class="panel-card report-form-card"><span class="eyebrow">NEW FIELD REPORT</span><h3>Describe what was affected</h3><p class="chart-sub">Use ordinary language. Keep quantities, units, locations, and severity explicit when known.</p><form id="reportForm"><label>Assign to scene<select name="scene_id">${options}</select></label><label>Damage report<textarea name="text" required maxlength="5000" placeholder="Example: Heavy flooding in Village A damaged 25 houses, two bridges, and approximately 3 km of road. The water supply system is partially damaged."></textarea></label><p class="form-note">Extraction is rules-based and explainable. Missing details remain blank. You can review and correct every assessment after submitting.</p><button class="button button-dark submit-report" type="submit">Process report <span>→</span></button><div id="reportFormError"></div></form></section>
+    return `<div class="report-layout"><section class="panel-card report-form-card"><span class="eyebrow">NEW FIELD REPORT</span><h3>Describe what was affected</h3><p class="chart-sub">Use ordinary language. Keep quantities, units, locations, and severity explicit when known.</p><form id="reportForm"><label>Assign to scene<select name="scene_id">${options}</select></label><label>Damage report<textarea name="text" required maxlength="5000" placeholder="Example: Heavy flooding in Village A damaged 25 houses, two bridges, and approximately 3 km of road. The water supply system is partially damaged."></textarea></label><p class="form-note">A local NLP model helps identify place names; explainable rules extract damage, quantities, and severity. Missing details remain blank. Review and correct each assessment after submitting.</p><button class="button button-dark submit-report" type="submit">Process report <span>→</span></button><div id="reportFormError"></div></form></section>
       <section class="report-list-panel"><div class="report-list-head"><div><h3>${state.sceneId ? `Reports · ${esc(selectedScene()?.name || "Scene")}` : "All event reports"}</h3><span class="report-count">${reports.length} ${reports.length === 1 ? "record" : "records"}</span></div><div class="filter-row"><input type="search" id="reportSearch" placeholder="Search reports…" value="${esc(state.filter)}" aria-label="Search reports"></div></div><div id="reportRows" class="report-list">${reportCards(reports)}</div></section></div>`;
   }
 
