@@ -179,7 +179,7 @@ body {
 .bar-row { gap: 10px; }
 .bar-label { color: #acb2bb; }
 .bar-track { background: #292d33; border-radius: 999px; }
-.bar-fill { background: linear-gradient(90deg, #d38536, #f0bc62); border-radius: 999px; box-shadow: 0 0 13px rgba(220,151,57,.25); }
+.bar-fill { display: block; background: linear-gradient(90deg, #d38536, #f0bc62); border-radius: 999px; box-shadow: 0 0 13px rgba(220,151,57,.25); }
 .bar-value { color: #e1e4e9; }
 .donut { box-shadow: 0 0 22px rgba(231,169,75,.08); }
 .donut:before { background: #15181c; }
