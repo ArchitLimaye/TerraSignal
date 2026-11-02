@@ -15,7 +15,6 @@ TerraSignal is a web application that helps organize and analyze damage reports 
 ## Tech Stack
 
 - Python and Flask
-- spaCy with the small English `en_core_web_sm` model for local place-name recognition
 - SQLite
 - HTML, CSS, and JavaScript
 - Chart.js
@@ -44,4 +43,4 @@ The first dependency installation downloads the spaCy model. After installation,
 
 The goal of TerraSignal is to make disaster damage reports easier to organize, review, and analyze through a simple web interface.
 
-*Note: Automated extraction can miss or misidentify details. Review the extracted assessment before relying on it.*
+*Note: The current report processing uses rule-based extraction, so results may require manual verification.*
